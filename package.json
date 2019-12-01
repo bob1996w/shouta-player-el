@@ -1,0 +1,23 @@
+{
+  "name": "shouta-player-el",
+  "version": "0.0.1",
+  "description": "A music player based on Electron",
+  "main": "./dist/electron.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "npm run build && electron ."
+  },
+  "author": "bob1996w",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.1.2",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "files": [
+    
+  ]
+}
