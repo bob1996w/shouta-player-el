@@ -1,7 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import { AddressInfo } from 'net';
 import viewServerApp from './viewServerApp';
 import { platform } from 'os';
+import { AppIpcMenuBar } from './AppIpc/AppIpcModules/AppIpcMenuBar';
 
 
 
@@ -17,7 +18,7 @@ const viewServer = viewServerAppInstance.listen(VIEW_SERVER_PORT, () => {
 
 function createWindow () {
     // Create browser window.
-    let win = new BrowserWindow({
+    let rendererClientWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -26,7 +27,11 @@ function createWindow () {
     });
     
     // and load index.html of the app.
-    win.loadURL(BASE_ADDRESS + '/');
+    rendererClientWindow.loadURL(BASE_ADDRESS + '/');
+    
+    let appIpcMenuBar = new AppIpcMenuBar(app);
+    Menu.setApplicationMenu(appIpcMenuBar.menus.Main);
+
 }
 
 app.on('ready', createWindow);
