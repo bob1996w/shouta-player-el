@@ -3,6 +3,7 @@ import { AddressInfo } from 'net';
 import viewServerApp from './viewServerApp';
 import { platform } from 'os';
 import { AppIpcMenuBar } from './AppIpc/AppIpcModules/AppIpcMenuBar';
+import { AppIpcCommands } from './AppIpc/AppIpcModules/AppIpcCommands';
 
 
 
@@ -22,14 +23,20 @@ function createWindow () {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            devTools: !app.isPackaged
         }
+    });
+
+    rendererClientWindow.webContents.openDevTools({
+        mode: "detach"
     });
     
     // and load index.html of the app.
     rendererClientWindow.loadURL(BASE_ADDRESS + '/');
     
-    let appIpcMenuBar = new AppIpcMenuBar(app);
+    let appIpcCommands = new AppIpcCommands(app, rendererClientWindow);
+    let appIpcMenuBar = new AppIpcMenuBar(app, appIpcCommands);
     Menu.setApplicationMenu(appIpcMenuBar.menus.Main);
 
 }

@@ -1,15 +1,18 @@
 import { IAppIpcModule } from "./IAppIpcModule";
 import { AppIpcMessage } from "../AppIpcMessage";
 import { Menu, App } from "electron";
+import { AppIpcCommands } from "./AppIpcCommands";
 
 export class AppIpcMenuBar implements IAppIpcModule {
     public IpcModuleName: string = 'MenuBar';
     private app: App = null;
+    private cmd: AppIpcCommands = null;
     private isMac = process.platform === 'darwin';
     public menus: {[name: string]: Menu} = null;
     
-    constructor (app: App) {
+    constructor (app: App, cmd: AppIpcCommands) {
         this.app = app;
+        this.cmd = cmd;
         this.menus = this.buildMenus();
     }
 
@@ -32,7 +35,7 @@ export class AppIpcMenuBar implements IAppIpcModule {
                         submenu: [
                             {
                                 label: '&Open Audio...',
-                                click: () => {/* open and play song*/}
+                                click: () => {this.cmd.openFileAndPlay()}
                             },
                             ...(this.isMac? []: [{
                                 role: <'quit'>'quit'
