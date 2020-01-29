@@ -2,7 +2,7 @@ import { dialog, App, BrowserWindow, FileFilter } from 'electron';
 import { IAppIpcModule } from "./IAppIpcModule";
 import { AppIpcMessage } from "../AppIpcMessage";
 import * as mm from 'music-metadata';
-import { AudioData } from '../../Data/AudioData';
+import { AudioData } from '../../../shared/Data/AudioData';
 
 export class AppIpcCommands implements IAppIpcModule {
     public IpcModuleName = 'Commands';
