@@ -1,10 +1,12 @@
 import { app, BrowserWindow, Menu } from 'electron';
 import { AddressInfo } from 'net';
-import viewServerApp from './viewServerApp';
 import { platform } from 'os';
+import { Server as HttpServer } from 'http';
+import * as portfinder from 'portfinder';
+
+import viewServerApp from './viewServerApp';
 import { AppIpcMenuBar } from './AppIpc/AppIpcModules/AppIpcMenuBar';
 import { AppIpcCommands } from './AppIpc/AppIpcModules/AppIpcCommands';
-import { Server as HttpServer } from 'http';
 
 // extending global to avoid recycling these references
 interface Global extends NodeJS.Global {
@@ -15,17 +17,15 @@ interface Global extends NodeJS.Global {
 }
 let g = <Global>global;
 
-const VIEW_SERVER_PORT = 10010;
+let port: number;
+let viewServerAppInstance = viewServerApp.getViewServerApp(app.getAppPath());
 
-const BASE_ADDRESS: string = 'http://localhost:' + VIEW_SERVER_PORT;
+function createWindow (port: number) {
+    let BASE_ADDRESS: string = 'http://localhost:' + port;
+    g.viewServer = viewServerAppInstance.listen(port, () => {
+        console.log(`View server is running on ${BASE_ADDRESS + '/'}}`);
+    })
 
-const viewServerAppInstance = viewServerApp.getViewServerApp(app.getAppPath());
-g.viewServer = viewServerAppInstance.listen(VIEW_SERVER_PORT, () => {
-    console.log(`View server is running on ${BASE_ADDRESS + '/'}}`);
-})
-
-
-function createWindow () {
     // Create browser window.
     g.rendererClientWindow = new BrowserWindow({
         width: 800,
@@ -49,7 +49,14 @@ function createWindow () {
 
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    portfinder.getPortPromise()
+    .then((port) => {
+        createWindow(port);
+    }).catch((error) => {
+        console.error(error);
+    });
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
