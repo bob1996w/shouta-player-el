@@ -4,22 +4,30 @@ import viewServerApp from './viewServerApp';
 import { platform } from 'os';
 import { AppIpcMenuBar } from './AppIpc/AppIpcModules/AppIpcMenuBar';
 import { AppIpcCommands } from './AppIpc/AppIpcModules/AppIpcCommands';
+import { Server as HttpServer } from 'http';
 
-
+// extending global to avoid recycling these references
+interface Global extends NodeJS.Global {
+    viewServer: HttpServer;
+    rendererClientWindow: BrowserWindow;
+    appIpcCommands: AppIpcCommands;
+    appIpcMenuBar: AppIpcMenuBar;
+}
+let g = <Global>global;
 
 const VIEW_SERVER_PORT = 10010;
 
 const BASE_ADDRESS: string = 'http://localhost:' + VIEW_SERVER_PORT;
 
 const viewServerAppInstance = viewServerApp.getViewServerApp(app.getAppPath());
-const viewServer = viewServerAppInstance.listen(VIEW_SERVER_PORT, () => {
+g.viewServer = viewServerAppInstance.listen(VIEW_SERVER_PORT, () => {
     console.log(`View server is running on ${BASE_ADDRESS + '/'}}`);
 })
 
 
 function createWindow () {
     // Create browser window.
-    let rendererClientWindow = new BrowserWindow({
+    g.rendererClientWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -28,16 +36,16 @@ function createWindow () {
         }
     });
 
-    rendererClientWindow.webContents.openDevTools({
+    g.rendererClientWindow.webContents.openDevTools({
         mode: "detach"
     });
     
     // and load index.html of the app.
-    rendererClientWindow.loadURL(BASE_ADDRESS + '/');
+    g.rendererClientWindow.loadURL(BASE_ADDRESS + '/');
     
-    let appIpcCommands = new AppIpcCommands(app, rendererClientWindow);
-    let appIpcMenuBar = new AppIpcMenuBar(app, appIpcCommands);
-    Menu.setApplicationMenu(appIpcMenuBar.menus.Main);
+    g.appIpcCommands = new AppIpcCommands(app, g.rendererClientWindow);
+    g.appIpcMenuBar = new AppIpcMenuBar(app, g.appIpcCommands);
+    Menu.setApplicationMenu(g.appIpcMenuBar.menus.Main);
 
 }
 
@@ -45,7 +53,7 @@ app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        viewServer.close(() => {
+        g.viewServer.close(() => {
             console.log(`View server closed.`);
         });
         app.quit();
