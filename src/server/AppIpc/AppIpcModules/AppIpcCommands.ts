@@ -1,22 +1,27 @@
 import { dialog, App, BrowserWindow, FileFilter } from 'electron';
 import { IAppIpcModule } from "./IAppIpcModule";
-import { AppIpcMessage } from "../AppIpcMessage";
+import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
 import * as mm from 'music-metadata';
 import { AudioData } from '../../../shared/Data/AudioData';
+import { EAppIpcAction } from '../../../shared/AppIpc/EAppIpcAction';
+import { AppIpcMain } from '../AppIpcMain';
 
 export class AppIpcCommands implements IAppIpcModule {
     public IpcModuleName = 'Commands';
+    private self: AppIpcCommands = this;
     private app: App = null;
     private window: BrowserWindow = null;
+    private appIpcMain: AppIpcMain = null;
 
     private parseOptions: mm.IOptions = {
         duration: false,
         skipCovers: true,
     };
 
-    constructor(app: App, window: BrowserWindow) {
+    constructor(app: App, window: BrowserWindow, ipcMain: AppIpcMain) {
         this.app = app;
         this.window = window;
+        this.appIpcMain = ipcMain;
     }
 
     public openFileAndPlay() {
@@ -24,7 +29,8 @@ export class AppIpcCommands implements IAppIpcModule {
             if (result.canceled) return Promise.resolve([]);
             else return Promise.all(result.filePaths.map(this.parseAudioFile.bind(this)));
         }).then((values: any[]) => {
-            // console.table(values, ['url']);
+            // currently only send the first song.
+            this.send2Audio(EAppIpcAction.Update, "Play", { AudioData: values[0] });
         }).catch((error) => {
             console.error(error);
         })
@@ -52,6 +58,10 @@ export class AppIpcCommands implements IAppIpcModule {
         return mm.parseFile(filePath, this.parseOptions).then((metadata: mm.IAudioMetadata): Promise<any> => {
             return Promise.resolve(new AudioData(filePath, metadata, 'img/defaultCover.png'));
         });
+    }
+
+    private send2Audio(action: EAppIpcAction, request: string, data: any) {
+        this.appIpcMain.send(new AppIpcMessage(this.IpcModuleName, "Audio", action, request, data));
     }
 
     public OnGetMessage(msg: AppIpcMessage): void {

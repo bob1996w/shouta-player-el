@@ -1,5 +1,5 @@
 import { IAppIpcModule } from "./IAppIpcModule";
-import { AppIpcMessage } from "../AppIpcMessage";
+import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
 import { Menu, App } from "electron";
 import { AppIpcCommands } from "./AppIpcCommands";
 

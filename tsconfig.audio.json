@@ -1,13 +1,16 @@
 {
     "compilerOptions": {
-        // "module": "commonjs",
+        "target": "es5",
+        "moduleResolution": "node",
         "sourceMap": true,
+        "outDir": "static",
         "baseUrl": ".",
         "paths": {
             "*": ["node_modules/*", "src/*"]
         }
     },
     "include": [
-        "src/**/*"
+        "src/audio/**/*",
+        "src/shared/**/*"
     ]
 }
