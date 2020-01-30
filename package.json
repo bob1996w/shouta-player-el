@@ -3,6 +3,22 @@
   "version": "0.0.1",
   "description": "A music player based on Electron",
   "main": "./dist/server/electron.js",
+  "build": {
+    "appId": "shouta.shouta-player",
+    "productName": "Shouta Player",
+    "files": [
+      "dist/*",
+      "dist/**/*",
+      "static/*",
+      "static/**/*"
+    ],
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "target": ["dmg", "zip", "dir"]
+    }
+  },
   "scripts": {
     "build:server": "tsc -p tsconfig.server.json",
     "build:audio": "webpack",
@@ -11,13 +27,15 @@
     "watch": "tsc -p tsconfig.server.json -w",
     "build": "run-s build:server build:audio",
     "clean": "run-s clean:server clean:audio",
-    "start": "npm run clean && npm run build && electron ."
+    "start": "npm run clean && npm run build && electron .",
+    "dist": "electron-builder"
   },
   "author": "bob1996w",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.2",
     "electron": "^7.1.2",
+    "electron-builder": "^22.3.2",
     "npm-run-all": "^4.1.5",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2",

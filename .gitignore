@@ -2,4 +2,5 @@
 build/*
 node_modules/*
 dist/*
+static/js/**/*
 **/.DS_Store
