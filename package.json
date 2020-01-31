@@ -30,11 +30,12 @@
     "clean:server": "rm -rf ./dist",
     "clean:audio": "rm -rf ./static/js",
     "clean:client": "rm -rf ./static/client && rm -f ./static/index.html",
+    "web": "npm run clean:client && webpack-dev-server --config-name client-dev-web --mode development --hot --open --inline",
     "watch": "tsc -p tsconfig.server.json -w",
     "build": "run-s build:server build:audio build:client",
     "clean": "run-s clean:server clean:audio clean:client",
     "start": "npm run clean && npm run build && electron .",
-    "dist": "electron-builder"
+    "dist": "npm run build && electron-builder"
   },
   "author": "bob1996w",
   "license": "ISC",

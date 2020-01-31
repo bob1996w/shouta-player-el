@@ -58,5 +58,57 @@ module.exports = [{
         publicPath: 'client',
         filename: 'bundle.js'
     }
+},
+{
+    /* for webpack-dev-server */
+    name: 'client-dev-web',
+    entry: './src/client/index.tsx',
+    target: 'web',
+    module: {
+        rules: [
+
+        // we use babel-loader to load our jsx and tsx files
+            {
+                test: /\.(ts|js)x?$/,
+                exclude: /node_modules/,
+                use: {
+                loader: 'babel-loader'
+                },
+            },
+
+        // css-loader to bundle all the css files into one file and style-loader to add all the styles  inside the style tag of the document
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            }
+        ]
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/client/index.html',
+            /*filename: '../index.html'*/
+            /* dev server doesn't handle parent directory */
+        })
+    ],
+    optimization: {
+        nodeEnv: 'web'
+    },
+    node: {
+        electron: 'empty',
+        fs: 'empty',
+    },
+    output: {
+        path: path.join(__dirname, 'static', 'client'),
+        publicPath: 'http://localhost:4000/',
+        filename: 'bundle.js'
+    },
+    devServer: {
+        contentBase: './static/client',
+        inline: true,
+        port: 4000
+    }
 }
 ]
