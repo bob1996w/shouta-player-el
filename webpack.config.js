@@ -89,26 +89,26 @@ module.exports = [{
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/client/index.html',
+            filename: 'index.html'
             /*filename: '../index.html'*/
             /* dev server doesn't handle parent directory */
         })
     ],
+    /*
     optimization: {
         nodeEnv: 'web'
     },
+    */
     node: {
-        electron: 'empty',
         fs: 'empty',
     },
     output: {
-        path: path.join(__dirname, 'static', 'client'),
-        publicPath: 'http://localhost:4000/',
+        path: path.resolve(__dirname, 'static/client'),
         filename: 'bundle.js'
     },
     devServer: {
-        contentBase: './static/client',
-        inline: true,
-        port: 4000
+        /*contentBase: './static/client',*/
+        hot: true
     }
 }
 ]
