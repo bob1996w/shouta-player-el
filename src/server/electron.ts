@@ -44,7 +44,7 @@ function createWindow (port: number) {
     });
     
     // and load index.html of the app.
-    g.rendererClientWindow.loadURL(BASE_ADDRESS + '/');
+    g.rendererClientWindow.loadFile('./static/index.html');
 
     // Create hidden window for playing audio
     g.audioClientWindow = new BrowserWindow({
