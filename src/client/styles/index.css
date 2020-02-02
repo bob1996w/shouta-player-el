@@ -12,3 +12,146 @@ h1 {
     text-align: center;
     margin: 0;
 }
+p {
+    margin: 0;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#viewport-wrapper {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* layout */
+@media screen and (min-width: 0px) {
+    #mainViewport-container {
+        height: 100%; 
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        padding: 0;
+    
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto 1fr auto auto;
+        grid-template-areas: "header"
+                            "viewToggle"
+                            "centerView"
+                            "nowPlaying"
+                            "footer";
+    }
+}
+
+@media screen and (min-width: 500px) {
+    #mainViewport-container {
+        height: 100%; 
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        padding: 0;
+    
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto 1fr auto auto;
+        grid-template-areas: "header header"
+                            "viewToggle centerView"
+                            "nowPlaying nowPlaying"
+                            "footer footer";
+    }
+}
+
+#mainViewport-headerView {
+    grid-area: header;
+}
+
+@media screen and (min-width: 0px) {
+    #mainViewport-viewToggle {
+        grid-area: viewToggle;
+    
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    #mainViewport-viewToggle {
+        grid-area: viewToggle;
+    
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+#mainViewport-centerView {
+    grid-area: centerView;
+    border: 2px solid black;
+}
+
+@media screen and (min-width: 0px) {
+    #mainViewport-nowPlayingView {
+        grid-area: nowPlaying;
+    
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: "nowPlayingInfo"
+                            "nowPlayingControl";
+    }
+}
+
+@media screen and (min-width: 500px) {
+    #mainViewport-nowPlayingView {
+        grid-area: nowPlaying;
+    
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "nowPlayingInfo nowPlayingControl";
+    }
+}
+
+#mainViewport-footerView {
+    grid-area: footer;
+}
+
+#nowPlayingInfo {
+    grid-area: nowPlayingInfo;
+}
+
+#nowPlayingControl {
+    grid-area: nowPlayingControl;
+}
+
+#nowPlayingControl-seekView {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas: "time1 audioSeek time2";
+}
+
+#nowPlayingControl-seekView-audioSeek {
+    grid-area: audioSeek;
+}
+
+#nowPlayingControl-seekView-time1 {
+    grid-area: time1;
+}
+
+#nowPlayingControl-seekView-time2 {
+    grid-area: time2;
+}

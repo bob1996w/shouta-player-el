@@ -1,11 +1,11 @@
 import * as React from 'react';
 import '../styles/index.css';
-import { remote } from 'electron';
+import { MainViewport } from './mainViewport/MainViewport';
 
 export const App: React.FC = (props: any) => {
     return (
-        <div>
-            <h1>Hello World!</h1>
+        <div id="viewport-wrapper">
+            <MainViewport />
         </div>
     );
 }
