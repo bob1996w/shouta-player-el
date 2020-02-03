@@ -1,7 +1,6 @@
 import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import { AddressInfo } from 'net';
 import { platform } from 'os';
-import { Server as HttpServer } from 'http';
 import * as portfinder from 'portfinder';
 
 import viewServerApp from './viewServerApp';
@@ -11,7 +10,6 @@ import { AppIpcMain } from './AppIpc/AppIpcMain';
 
 // extending global to avoid recycling these references
 interface Global extends NodeJS.Global {
-    viewServer: HttpServer;
     audioClientWindow: BrowserWindow;
     rendererClientWindow: BrowserWindow;
     appIpcCommands: AppIpcCommands;
@@ -27,10 +25,6 @@ let args = process.argv.slice(2);
 console.log(args);
 
 function createWindow (port: number) {
-    let BASE_ADDRESS: string = 'http://localhost:' + port;
-    g.viewServer = viewServerAppInstance.listen(port, () => {
-        console.log(`View server is running on ${BASE_ADDRESS + '/'}}`);
-    })
 
     // Create browser window.
     g.rendererClientWindow = new BrowserWindow({
@@ -78,10 +72,6 @@ function createWindow (port: number) {
 
     // when closing the rendererClientWindow
     g.rendererClientWindow.on('closed', () => {
-        g.viewServer.close(() => {
-            console.log('View Server closed.');
-            g.viewServer = null;
-        })
         g.audioClientWindow = null;
         g.rendererClientWindow = null;
         g.appIpcCommands = null;
@@ -101,9 +91,6 @@ app.on('ready', () => {
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        g.viewServer.close(() => {
-            console.log(`View server closed.`);
-        });
         app.quit();
     }
 });
