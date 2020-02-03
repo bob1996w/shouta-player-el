@@ -50,20 +50,19 @@ module.exports = [{
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/client/index.html',
-            filename: '../index.html'
+            filename: 'index.html'
         })
     ],
     output: {
-        path: path.join(__dirname, 'static', 'client'),
-        publicPath: 'client',
-        filename: 'bundle.js'
+        path: path.join(__dirname, 'static'),
+        filename: 'client/bundle.js'
     }
 },
 {
     /* for webpack-dev-server */
     name: 'client-dev-web',
     entry: './src/client/index.tsx',
-    target: 'web',
+    target: 'electron-renderer',
     module: {
         rules: [
 
@@ -90,24 +89,15 @@ module.exports = [{
         new HtmlWebpackPlugin({
             template: './src/client/index.html',
             filename: 'index.html'
-            /*filename: '../index.html'*/
-            /* dev server doesn't handle parent directory */
         })
     ],
-    /*
-    optimization: {
-        nodeEnv: 'web'
-    },
-    */
-    node: {
-        fs: 'empty',
-    },
     output: {
-        path: path.resolve(__dirname, 'static/client'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, 'static'),
+        filename: 'client/bundle.js'
     },
     devServer: {
         /*contentBase: './static/client',*/
+        port: 10080,
         hot: true
     }
 }

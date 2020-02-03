@@ -23,6 +23,9 @@ let g = <Global>global;
 let port: number;
 let viewServerAppInstance = viewServerApp.getViewServerApp(app.getAppPath());
 
+let args = process.argv.slice(2);
+console.log(args);
+
 function createWindow (port: number) {
     let BASE_ADDRESS: string = 'http://localhost:' + port;
     g.viewServer = viewServerAppInstance.listen(port, () => {
@@ -44,7 +47,13 @@ function createWindow (port: number) {
     });
     
     // and load index.html of the app.
-    g.rendererClientWindow.loadFile('./static/index.html');
+    if (args.includes('useDevServer')) {
+        console.log('useDevServer');
+        g.rendererClientWindow.loadURL('http://localhost:10080/');
+    }
+    else {
+        g.rendererClientWindow.loadFile('./static/index.html');
+    }
 
     // Create hidden window for playing audio
     g.audioClientWindow = new BrowserWindow({
