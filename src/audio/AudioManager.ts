@@ -29,7 +29,7 @@ class AudioManager {
 
 let audioManager = new AudioManager();
 
-ipcRenderer.on("FromWebSocket", (ev, msg: AppIpcMessage) => {
+ipcRenderer.on("FromClient", (ev, msg: AppIpcMessage) => {
     console.log(`getMessage FromWebSocket`);
     console.log(msg);
     if (msg.receiverModule !== "Audio") return;

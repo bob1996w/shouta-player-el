@@ -12,7 +12,7 @@ export class AppIpcMain {
 
     public send(msg: AppIpcMessage) {
         if (msg.receiverModule === "Audio") {
-            this.audioWindow.webContents.send("FromWebSocket", msg);
+            this.audioWindow.webContents.send("FromClient", msg);
         }
     }
 }
