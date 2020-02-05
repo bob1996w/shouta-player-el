@@ -28,7 +28,7 @@
     "build:audio": "webpack --config-name audio",
     "build:client": "webpack --config-name client",
     "clean:server": "rm -rf ./dist",
-    "clean:audio": "rm -rf ./static/js",
+    "clean:audio": "rm -rf ./static/audio && rm -f ./static/audio.html",
     "clean:client": "rm -rf ./static/client && rm -f ./static/index.html",
     "web": "npm run clean:client && webpack-dev-server --config-name client-dev-web --mode development --hot --inline",
     "webel": "npm run build:server && npm run build:audio && electron . useDevServer",

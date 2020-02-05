@@ -1,15 +1,16 @@
-export = 0;
-import  { ipcRenderer, remote } from 'electron';
 import { Howl, Holwer } from 'howler';
+import { AppIpcAudio } from './AppIpcAudio';
 import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
 import { AudioData } from '../shared/Data/AudioData';
 
-class AudioManager {
+export class AudioManager {
+    private appIpcAudio: AppIpcAudio = null;
     private howl: Howl = null;
     private currentAudioData: AudioData = null;
 
-    public constructor() {
+    public constructor(appIpcAudio: AppIpcAudio) {
+        this.appIpcAudio = appIpcAudio;
         console.log("AudioManager initialized.");
     }
 
@@ -26,15 +27,4 @@ class AudioManager {
         });
     }
 }
-
-let audioManager = new AudioManager();
-
-ipcRenderer.on("FromClient", (ev, msg: AppIpcMessage) => {
-    console.log(`getMessage FromWebSocket`);
-    console.log(msg);
-    if (msg.receiverModule !== "Audio") return;
-    if (msg.action === EAppIpcAction.Update && msg.request === "Play") {
-        audioManager.setAndPlay(msg.data.AudioData);
-    }
-})
 

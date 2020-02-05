@@ -1,4 +1,4 @@
-import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
+import { AppIpcMessage } from "./AppIpcMessage";
 
 export interface IAppIpcModule {
     IpcModuleName: string;

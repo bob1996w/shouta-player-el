@@ -1,4 +1,4 @@
-import { IAppIpcModule } from "./IAppIpcModule";
+import { IAppIpcModule } from "../../../shared/AppIpc/IAppIpcModule";
 import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
 import { Menu, App } from "electron";
 import { AppIpcCommands } from "./AppIpcCommands";

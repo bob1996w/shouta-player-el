@@ -2,7 +2,7 @@ const path = require("path")
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = [{
     name: 'audio',
-    entry: './src/audio/AudioManager.ts',
+    entry: './src/audio/audio.ts',
     target: 'electron-renderer',
     module: {
         rules: [
@@ -16,9 +16,15 @@ module.exports = [{
     resolve: {
         extensions: [ '.tsx', '.ts', '.js' ]
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/audio/audio.html',
+            filename: 'audio.html'
+        })
+    ],
     output: {
-        filename: 'audioBundle.js',
-        path: path.resolve(__dirname, 'static', 'js')
+        filename: 'audio/audioBundle.js',
+        path: path.resolve(__dirname, 'static')
     }
 },
 {

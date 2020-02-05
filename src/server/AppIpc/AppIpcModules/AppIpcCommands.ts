@@ -1,5 +1,5 @@
 import { dialog, App, BrowserWindow, FileFilter } from 'electron';
-import { IAppIpcModule } from "./IAppIpcModule";
+import { IAppIpcModule } from "../../../shared/AppIpc/IAppIpcModule";
 import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
 import * as mm from 'music-metadata';
 import { AudioData } from '../../../shared/Data/AudioData';
