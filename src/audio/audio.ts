@@ -10,7 +10,7 @@ globalThis.appIpcAudio = appIpcAudio;
 globalThis.audioManager = audioManager;
 
 function audioUpdateCallback(request: string, data: any) {
-    appIpcAudio[request] = data;
+    audioManager[request] = data;
 }
 
 appIpcAudio.on("Commands", EAppIpcAction.Update, audioUpdateCallback);

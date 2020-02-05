@@ -2,6 +2,7 @@ import  { ipcRenderer, remote } from 'electron';
 import { IAppIpcModule } from '../shared/AppIpc/IAppIpcModule';
 import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
+import { AppIpcRequest } from '../shared/AppIpc/AppIpcRequest';
 
 export class AppIpcAudio implements IAppIpcModule {
     public IpcModuleName = 'Audio';
@@ -18,7 +19,9 @@ export class AppIpcAudio implements IAppIpcModule {
         if (msg.receiverModule != this.IpcModuleName) {
             return;
         }
-        this.ipcCallbacks[msg.senderModule][msg.action](msg.request, msg.data);
+        msg.requests.forEach((req: AppIpcRequest, index: number, array: AppIpcRequest[]) => {
+            this.ipcCallbacks[msg.senderModule][msg.action](req.request, req.data);
+        });
     }
 
     // set callbacks

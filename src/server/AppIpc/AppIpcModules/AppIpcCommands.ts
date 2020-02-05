@@ -5,6 +5,8 @@ import * as mm from 'music-metadata';
 import { AudioData } from '../../../shared/Data/AudioData';
 import { EAppIpcAction } from '../../../shared/AppIpc/EAppIpcAction';
 import { AppIpcMain } from '../AppIpcMain';
+import { AppIpcRequest } from '../../../shared/AppIpc/AppIpcRequest';
+import { EAudioPlaybackState } from '../../../shared/Audio/EAudioPlaybackState';
 
 export class AppIpcCommands implements IAppIpcModule {
     public IpcModuleName = 'Commands';
@@ -30,7 +32,12 @@ export class AppIpcCommands implements IAppIpcModule {
             else return Promise.all(result.filePaths.map(this.parseAudioFile.bind(this)));
         }).then((values: any[]) => {
             // currently only send the first song.
-            this.send2Audio(EAppIpcAction.Update, "Play", { AudioData: values[0] });
+            if (values.length > 0) {
+                this.send2Audio(EAppIpcAction.Update, [
+                    new AppIpcRequest('currentPlaylist', values),
+                    new AppIpcRequest('playState', EAudioPlaybackState.Playing)
+                ]);
+            }
         }).catch((error) => {
             console.error(error);
         })
@@ -60,8 +67,8 @@ export class AppIpcCommands implements IAppIpcModule {
         });
     }
 
-    private send2Audio(action: EAppIpcAction, request: string, data: any) {
-        this.appIpcMain.send(new AppIpcMessage(this.IpcModuleName, "Audio", action, request, data));
+    private send2Audio(action: EAppIpcAction, requests: AppIpcRequest[]) {
+        this.appIpcMain.send(new AppIpcMessage(this.IpcModuleName, "Audio", action, requests));
     }
 
     public OnGetMessage(msg: AppIpcMessage): void {
