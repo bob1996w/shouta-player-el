@@ -1,17 +1,16 @@
 import { EAppIpcAction } from "./EAppIpcAction";
+import { AppIpcRequest } from "./AppIpcRequest";
 
 export class AppIpcMessage {
     public senderModule: string = null;
     public receiverModule: string = null;
     public action: EAppIpcAction = EAppIpcAction.Unset;
-    public request: string = null;
-    public data: any = null;
+    public requests: AppIpcRequest[] = null;
     
-    constructor (senderModule: string, receiverModule: string, action: EAppIpcAction, request: string, data: any) {
+    constructor (senderModule: string, receiverModule: string, action: EAppIpcAction, requests: AppIpcRequest[]) {
         this.senderModule = senderModule;
         this.receiverModule = receiverModule;
         this.action = action;
-        this.request = request;
-        this.data = data;
+        this.requests = requests;
     }
 }
