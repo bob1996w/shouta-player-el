@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
-import { EAudioPlaybackState } from '../../../../shared/Audio/EAudioPlaybackState';
+import { EAudioPlayState } from '../../../../shared/Audio/EAudioPlayState';
 import { AppIpcRequest } from '../../../../shared/AppIpc/AppIpcRequest';
 
 export function NowPlayingControl(props: any) {
@@ -10,7 +10,7 @@ export function NowPlayingControl(props: any) {
         // run once on first render
         props.ipc.on('Audio', EAppIpcAction.Response, (request:string, data: any) => {
             if (request === 'playState') {
-                setIsPlaying(data === EAudioPlaybackState.Playing);
+                setIsPlaying(data === EAudioPlayState.Playing);
             }
         });
 
@@ -22,7 +22,7 @@ export function NowPlayingControl(props: any) {
 
     function buttonPlayOrPause() {
         props.ipc.send2Audio(EAppIpcAction.Update, [
-            new AppIpcRequest('playState', isPlaying? EAudioPlaybackState.Paused : EAudioPlaybackState.Playing)
+            new AppIpcRequest('playState', isPlaying? EAudioPlayState.Paused : EAudioPlayState.Playing)
         ]);
     }
 

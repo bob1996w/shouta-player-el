@@ -6,7 +6,7 @@ import { AudioData } from '../../../shared/Data/AudioData';
 import { EAppIpcAction } from '../../../shared/AppIpc/EAppIpcAction';
 import { AppIpcMain } from '../AppIpcMain';
 import { AppIpcRequest } from '../../../shared/AppIpc/AppIpcRequest';
-import { EAudioPlaybackState } from '../../../shared/Audio/EAudioPlaybackState';
+import { EAudioPlayState } from '../../../shared/Audio/EAudioPlayState';
 
 export class AppIpcCommands implements IAppIpcModule {
     public IpcModuleName = 'Commands';

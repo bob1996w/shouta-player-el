@@ -3,7 +3,7 @@ import { AppIpcAudio } from './AppIpcAudio';
 import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
 import { AudioData } from '../shared/Data/AudioData';
-import { EAudioPlaybackState } from '../shared/Audio/EAudioPlaybackState';
+import { EAudioPlayState } from '../shared/Audio/EAudioPlayState';
 import { AppIpcRequest } from '../shared/AppIpc/AppIpcRequest';
 
 export class AudioManager {
@@ -15,7 +15,7 @@ export class AudioManager {
     private _volume: number = 0.5;    // the volume should be 0 ~ 1.
     private _currentPlaylistIndex: number = null;
     private _currentPlaylist: AudioData[] = null;
-    private _playState: EAudioPlaybackState
+    private _playState: EAudioPlayState
 
     public constructor(appIpcAudio: AppIpcAudio) {
         this.appIpcAudio = appIpcAudio;
@@ -52,27 +52,27 @@ export class AudioManager {
         this._volume = value;
     }
 
-    public get playState(): EAudioPlaybackState {
+    public get playState(): EAudioPlayState {
         if (!this._howl) {
-            return EAudioPlaybackState.Stopped;
+            return EAudioPlayState.Stopped;
         }
         else if (this._howl.playing()) {
-            return EAudioPlaybackState.Playing;
+            return EAudioPlayState.Playing;
         }
         else {
-            return EAudioPlaybackState.Paused;
+            return EAudioPlayState.Paused;
         }
     }
 
-    public set playState(value: EAudioPlaybackState) {
+    public set playState(value: EAudioPlayState) {
         if (!this._howl) {
             return;
         }
         this._playState = value;
-        if (value === EAudioPlaybackState.Paused) {
+        if (value === EAudioPlayState.Paused) {
             this._howl.pause(this._currentHowlId);
         }
-        else if (value === EAudioPlaybackState.Playing) {
+        else if (value === EAudioPlayState.Playing) {
             this._howl.play(this._currentHowlId);
         }
         this.appIpcAudio.send2Index(EAppIpcAction.Response, [
@@ -97,7 +97,7 @@ export class AudioManager {
 
     private onFinishLoad() {
         this._currentHowlId = this._howl.play();
-        this.playState = EAudioPlaybackState.Playing;
+        this.playState = EAudioPlayState.Playing;
     }
 
     private onLoadError(howlId: number, error: string) {

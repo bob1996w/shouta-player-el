@@ -1,4 +1,4 @@
-export enum EAudioPlaybackState {
+export enum EAudioPlayState {
     // the audio is playing.
     Playing = 'Playing',
     // the audio is paused.
