@@ -1,12 +1,41 @@
 import * as React from 'react';
+import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
+import { EAudioPlaybackState } from '../../../../shared/Audio/EAudioPlaybackState';
+import { AppIpcRequest } from '../../../../shared/AppIpc/AppIpcRequest';
 
 export function NowPlayingControl(props: any) {
+    const [isPlaying, setIsPlaying] = React.useState(false);
+
+    React.useEffect(() => {
+        // run once on first render
+        props.ipc.on('Audio', EAppIpcAction.Response, (request:string, data: any) => {
+            if (request === 'playState') {
+                setIsPlaying(data === EAudioPlaybackState.Playing);
+            }
+        });
+
+        props.ipc.send2Audio(EAppIpcAction.Query, [
+            new AppIpcRequest('playState', null)
+        ]);
+
+    }, [])
+
+    function buttonPlayOrPause() {
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new AppIpcRequest('playState', isPlaying? EAudioPlaybackState.Paused : EAudioPlaybackState.Playing)
+        ]);
+    }
+
     return (
         <div id="nowPlayingControl">
             <div>
                 <a href="#">前</a>
                 <a href="#">退</a>
-                <a href="#">始</a>
+                {isPlaying?
+                    <a href="#" onClick={buttonPlayOrPause}>暫</a>
+                    :
+                    <a href="#" onClick={buttonPlayOrPause}>始</a>
+                }
                 <a href="#">進</a>
                 <a href="#">次</a>
                 <input type="range" name="volume" id="volume"/>

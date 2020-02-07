@@ -2,17 +2,27 @@ import { BrowserWindow, IpcMain } from "electron";
 import { AppIpcMessage } from "../../shared/AppIpc/AppIpcMessage";
 
 export class AppIpcMain {
+    private rendererWindow: BrowserWindow = null;
     private audioWindow: BrowserWindow = null;
     private ipcMain: IpcMain = null;
 
-    constructor(audioWindow: BrowserWindow, ipcMain: IpcMain) {
+    constructor(rendererWindow: BrowserWindow, audioWindow: BrowserWindow, ipcMain: IpcMain) {
+        this.rendererWindow = rendererWindow;
         this.audioWindow = audioWindow;
         this.ipcMain = ipcMain;
+
+        this.ipcMain.on('Message', (event, msg) => {
+            this.send(msg);
+        })
     }
 
     public send(msg: AppIpcMessage) {
+        console.log(`main receive message from ${msg.senderModule} to ${msg.receiverModule}`)
         if (msg.receiverModule === "Audio") {
-            this.audioWindow.webContents.send("FromClient", msg);
+            this.audioWindow.webContents.send("Message", msg);
+        }
+        if (msg.receiverModule === "Index") {
+            this.rendererWindow.webContents.send("Message", msg);
         }
     }
 }

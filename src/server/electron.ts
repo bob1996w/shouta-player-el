@@ -64,7 +64,7 @@ function createWindow (port: number) {
         mode: "detach"
     });
 
-    g.appIpcMain = new AppIpcMain(g.audioClientWindow, ipcMain);
+    g.appIpcMain = new AppIpcMain(g.rendererClientWindow, g.audioClientWindow, ipcMain);
     
     g.appIpcCommands = new AppIpcCommands(app, g.rendererClientWindow, g.appIpcMain);
     g.appIpcMenuBar = new AppIpcMenuBar(app, g.appIpcCommands);

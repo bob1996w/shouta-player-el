@@ -35,7 +35,7 @@ export class AppIpcCommands implements IAppIpcModule {
             if (values.length > 0) {
                 this.send2Audio(EAppIpcAction.Update, [
                     new AppIpcRequest('currentPlaylist', values),
-                    new AppIpcRequest('playState', EAudioPlaybackState.Playing)
+                    new AppIpcRequest('loadAudioAndPlay', null)
                 ]);
             }
         }).catch((error) => {

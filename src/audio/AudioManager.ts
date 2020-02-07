@@ -4,15 +4,18 @@ import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
 import { AudioData } from '../shared/Data/AudioData';
 import { EAudioPlaybackState } from '../shared/Audio/EAudioPlaybackState';
+import { AppIpcRequest } from '../shared/AppIpc/AppIpcRequest';
 
 export class AudioManager {
     private appIpcAudio: AppIpcAudio = null;
 
     private _howl: Howl = null;
+    private _currentHowlId: number = null;
 
     private _volume: number = 0.5;    // the volume should be 0 ~ 1.
     private _currentPlaylistIndex: number = null;
     private _currentPlaylist: AudioData[] = null;
+    private _playState: EAudioPlaybackState
 
     public constructor(appIpcAudio: AppIpcAudio) {
         this.appIpcAudio = appIpcAudio;
@@ -30,6 +33,7 @@ export class AudioManager {
             this._currentPlaylistIndex = null;
         }
         this._currentPlaylist = value;
+        this._currentPlaylistIndex = 0;
     }
 
     public get volume(): number {
@@ -62,24 +66,25 @@ export class AudioManager {
 
     public set playState(value: EAudioPlaybackState) {
         if (!this._howl) {
-            if (this.currentPlaylist.length == 0) {
-                return;
-            }
-            else if (value === EAudioPlaybackState.Playing){
-                this._currentPlaylistIndex = 0;
-                this.loadNewAudioAndPlay();
-            }
+            return;
         }
-        else if (value === EAudioPlaybackState.Paused) {
-            this._howl.pause();
+        this._playState = value;
+        if (value === EAudioPlaybackState.Paused) {
+            this._howl.pause(this._currentHowlId);
         }
         else if (value === EAudioPlaybackState.Playing) {
-            this._howl.play();
+            this._howl.play(this._currentHowlId);
         }
+        this.appIpcAudio.send2Index(EAppIpcAction.Response, [
+            new AppIpcRequest('playState', this.playState)
+        ]);
     }
 
     // set new howl to be the first track on the list and play.
-    private loadNewAudioAndPlay() {
+    public set loadAudioAndPlay(value) {
+        if (this._howl) {
+            this._howl.stop(this._currentHowlId);
+        }
         this._howl = new Howl({
             src: [this.currentPlaylist[this._currentPlaylistIndex].url],
             volume: this.volume,
@@ -91,7 +96,8 @@ export class AudioManager {
     }
 
     private onFinishLoad() {
-        this._howl.play();
+        this._currentHowlId = this._howl.play();
+        this.playState = EAudioPlaybackState.Playing;
     }
 
     private onLoadError(howlId: number, error: string) {

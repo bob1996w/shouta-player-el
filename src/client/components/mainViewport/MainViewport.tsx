@@ -12,7 +12,7 @@ export function MainViewport (props: any) {
             <div id="mainViewport-centerView">
                 <p>This is center view</p>
             </div>
-            <NowPlayingView />
+            <NowPlayingView {...props}/>
             <FooterView />
         </div>
     )

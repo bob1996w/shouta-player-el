@@ -1,5 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { App } from './components/App';
+import { AppIpcIndex } from './AppIpcIndex';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+let appIpcIndex = new AppIpcIndex();
+
+ReactDOM.render(<App ipc={appIpcIndex}/>, document.getElementById('root'));
