@@ -5,6 +5,9 @@ import { IpcRequest } from '../../../../shared/AppIpc/IpcRequest';
 
 export function NowPlayingControl(props: any) {
     const [isPlaying, setIsPlaying] = React.useState(false);
+    const [volume, setVolume] = React.useState(0.0);
+    const [seekTime, setSeekTime] = React.useState(0.0);
+    const [duration, setDuration] = React.useState(0.0);
 
     React.useEffect(() => {
         // run once on first render
@@ -12,10 +15,14 @@ export function NowPlayingControl(props: any) {
             if (request === 'playState') {
                 setIsPlaying(data === EAudioPlayState.Playing);
             }
+            else if (request === 'volume') {
+                setVolume(data);
+            }
         });
 
         props.ipc.send2Audio(EAppIpcAction.Query, [
-            new IpcRequest('playState', null)
+            new IpcRequest('playState', null),
+            new IpcRequest('volume', null)
         ]);
 
     }, [])
@@ -26,19 +33,50 @@ export function NowPlayingControl(props: any) {
         ]);
     }
 
+    function buttonNextTrack() {
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new IpcRequest('nextTrack', null)
+        ]);
+    }
+
+    function buttonPreviousTrack() {
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new IpcRequest('previousTrack', null)
+        ]);
+    }
+
+    function buttonSeekForward() {
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new IpcRequest('seekForward', null)
+        ]);
+    }
+
+    function buttonSeekBackward() {
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new IpcRequest('seekBackward', null)
+        ]);
+    }
+
+    function handleVolumeChange(event) {
+        setVolume(event.target.value)
+        props.ipc.send2Audio(EAppIpcAction.Update, [
+            new IpcRequest('volume', event.target.value)
+        ]);
+    }
+
     return (
         <div id="nowPlayingControl">
             <div>
-                <a href="#">前</a>
-                <a href="#">退</a>
+                <a href="#" onClick={buttonPreviousTrack}>前</a>
+                <a href="#" onClick={buttonSeekBackward}>退</a>
                 {isPlaying?
                     <a href="#" onClick={buttonPlayOrPause}>暫</a>
                     :
                     <a href="#" onClick={buttonPlayOrPause}>始</a>
                 }
-                <a href="#">進</a>
-                <a href="#">次</a>
-                <input type="range" name="volume" id="volume"/>
+                <a href="#" onClick={buttonSeekForward}>進</a>
+                <a href="#" onClick={buttonNextTrack}>次</a>
+                <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange}/>
             </div>
             <div id="nowPlayingControl-seekView">
                 <p id="nowPlayingControl-seekView-time1">0:00</p>
