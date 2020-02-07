@@ -1,5 +1,5 @@
 import { BrowserWindow, IpcMain } from "electron";
-import { AppIpcMessage } from "../../shared/AppIpc/AppIpcMessage";
+import { IpcMessage } from "../../shared/AppIpc/IpcMessage";
 
 export class AppIpcMain {
     private rendererWindow: BrowserWindow = null;
@@ -16,7 +16,7 @@ export class AppIpcMain {
         })
     }
 
-    public send(msg: AppIpcMessage) {
+    public send(msg: IpcMessage) {
         console.log(`main receive message from ${msg.senderModule} to ${msg.receiverModule}`)
         if (msg.receiverModule === "Audio") {
             this.audioWindow.webContents.send("Message", msg);

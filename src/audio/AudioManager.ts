@@ -1,10 +1,10 @@
 import { Howl, Holwer } from 'howler';
 import { AppIpcAudio } from './AppIpcAudio';
-import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
+import { IpcMessage } from '../shared/AppIpc/IpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
 import { AudioData } from '../shared/Data/AudioData';
 import { EAudioPlayState } from '../shared/Audio/EAudioPlayState';
-import { AppIpcRequest } from '../shared/AppIpc/AppIpcRequest';
+import { IpcRequest } from '../shared/AppIpc/IpcRequest';
 
 export class AudioManager {
     private appIpcAudio: AppIpcAudio = null;
@@ -76,7 +76,7 @@ export class AudioManager {
             this._howl.play(this._currentHowlId);
         }
         this.appIpcAudio.send2Index(EAppIpcAction.Response, [
-            new AppIpcRequest('playState', this.playState)
+            new IpcRequest('playState', this.playState)
         ]);
     }
 

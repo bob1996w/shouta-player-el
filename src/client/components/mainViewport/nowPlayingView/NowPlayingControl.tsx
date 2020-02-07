@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
 import { EAudioPlayState } from '../../../../shared/Audio/EAudioPlayState';
-import { AppIpcRequest } from '../../../../shared/AppIpc/AppIpcRequest';
+import { IpcRequest } from '../../../../shared/AppIpc/IpcRequest';
 
 export function NowPlayingControl(props: any) {
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -15,14 +15,14 @@ export function NowPlayingControl(props: any) {
         });
 
         props.ipc.send2Audio(EAppIpcAction.Query, [
-            new AppIpcRequest('playState', null)
+            new IpcRequest('playState', null)
         ]);
 
     }, [])
 
     function buttonPlayOrPause() {
         props.ipc.send2Audio(EAppIpcAction.Update, [
-            new AppIpcRequest('playState', isPlaying? EAudioPlayState.Paused : EAudioPlayState.Playing)
+            new IpcRequest('playState', isPlaying? EAudioPlayState.Paused : EAudioPlayState.Playing)
         ]);
     }
 

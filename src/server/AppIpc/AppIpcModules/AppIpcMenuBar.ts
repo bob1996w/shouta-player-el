@@ -1,5 +1,5 @@
 import { IAppIpcModule } from "../../../shared/AppIpc/IAppIpcModule";
-import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
+import { IpcMessage } from "../../../shared/AppIpc/IpcMessage";
 import { Menu, App } from "electron";
 import { AppIpcCommands } from "./AppIpcCommands";
 
@@ -47,7 +47,7 @@ export class AppIpcMenuBar implements IAppIpcModule {
         };
     }
 
-    public OnGetMessage (meg: AppIpcMessage): void {
+    public OnGetMessage (meg: IpcMessage): void {
 
     }
 }

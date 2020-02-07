@@ -1,6 +1,6 @@
-import { AppIpcMessage } from "./AppIpcMessage";
+import { IpcMessage } from "./IpcMessage";
 
 export interface IAppIpcModule {
     IpcModuleName: string;
-    OnGetMessage(msg: AppIpcMessage): void;
+    OnGetMessage(msg: IpcMessage): void;
 }

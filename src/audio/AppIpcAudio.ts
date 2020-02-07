@@ -1,8 +1,8 @@
 import  { ipcRenderer, remote } from 'electron';
 import { IAppIpcModule } from '../shared/AppIpc/IAppIpcModule';
-import { AppIpcMessage } from '../shared/AppIpc/AppIpcMessage';
+import { IpcMessage } from '../shared/AppIpc/IpcMessage';
 import { EAppIpcAction } from '../shared/AppIpc/EAppIpcAction';
-import { AppIpcRequest } from '../shared/AppIpc/AppIpcRequest';
+import { IpcRequest } from '../shared/AppIpc/IpcRequest';
 
 export type ActionCallback = (req: string, data: any) => void;
 
@@ -21,12 +21,12 @@ export class AppIpcAudio implements IAppIpcModule {
         })
     }
 
-    public OnGetMessage(msg: AppIpcMessage) {
+    public OnGetMessage(msg: IpcMessage) {
         if (msg.receiverModule != this.IpcModuleName) {
             return;
         }
         console.log(msg);
-        msg.requests.forEach((req: AppIpcRequest, index: number, array: AppIpcRequest[]) => {
+        msg.requests.forEach((req: IpcRequest, index: number, array: IpcRequest[]) => {
             this.ipcCallbacks[msg.senderModule][msg.action].forEach(
                 (callback: (request: string, data: any) => void, innderIndex: number, callbacks: {(request: string, data: any): void}[]) => {
                     callback(req.request, req.data);
@@ -45,9 +45,9 @@ export class AppIpcAudio implements IAppIpcModule {
         this.ipcCallbacks[senderModule][action].push(callback);
     }
 
-    public send2Index(action: EAppIpcAction, requests: AppIpcRequest[]) {
+    public send2Index(action: EAppIpcAction, requests: IpcRequest[]) {
         console.log('send2Index')
         console.log(requests)
-        this.ipcRenderer.send("Message", new AppIpcMessage(this.IpcModuleName, 'Index', action, requests));
+        this.ipcRenderer.send("Message", new IpcMessage(this.IpcModuleName, 'Index', action, requests));
     }
 }

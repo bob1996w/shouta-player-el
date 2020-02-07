@@ -1,4 +1,4 @@
-export class AppIpcRequest {
+export class IpcRequest {
     public request: string = null;
     public data: any = null;
     

@@ -1,11 +1,11 @@
 import { dialog, App, BrowserWindow, FileFilter } from 'electron';
 import { IAppIpcModule } from "../../../shared/AppIpc/IAppIpcModule";
-import { AppIpcMessage } from "../../../shared/AppIpc/AppIpcMessage";
+import { IpcMessage } from "../../../shared/AppIpc/IpcMessage";
 import * as mm from 'music-metadata';
 import { AudioData } from '../../../shared/Data/AudioData';
 import { EAppIpcAction } from '../../../shared/AppIpc/EAppIpcAction';
 import { AppIpcMain } from '../AppIpcMain';
-import { AppIpcRequest } from '../../../shared/AppIpc/AppIpcRequest';
+import { IpcRequest } from '../../../shared/AppIpc/IpcRequest';
 import { EAudioPlayState } from '../../../shared/Audio/EAudioPlayState';
 
 export class AppIpcCommands implements IAppIpcModule {
@@ -34,8 +34,8 @@ export class AppIpcCommands implements IAppIpcModule {
             // currently only send the first song.
             if (values.length > 0) {
                 this.send2Audio(EAppIpcAction.Update, [
-                    new AppIpcRequest('currentPlaylist', values),
-                    new AppIpcRequest('loadAudioAndPlay', null)
+                    new IpcRequest('currentPlaylist', values),
+                    new IpcRequest('loadAudioAndPlay', null)
                 ]);
             }
         }).catch((error) => {
@@ -67,11 +67,11 @@ export class AppIpcCommands implements IAppIpcModule {
         });
     }
 
-    private send2Audio(action: EAppIpcAction, requests: AppIpcRequest[]) {
-        this.appIpcMain.send(new AppIpcMessage(this.IpcModuleName, "Audio", action, requests));
+    private send2Audio(action: EAppIpcAction, requests: IpcRequest[]) {
+        this.appIpcMain.send(new IpcMessage(this.IpcModuleName, "Audio", action, requests));
     }
 
-    public OnGetMessage(msg: AppIpcMessage): void {
+    public OnGetMessage(msg: IpcMessage): void {
 
     }
 }
