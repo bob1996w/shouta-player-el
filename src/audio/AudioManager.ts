@@ -42,7 +42,7 @@ export class AudioManager {
             this._currentPlaylistIndex = null;
         }
         this._currentPlaylist = value;
-        this._currentPlaylistIndex = 0;
+        this.currentPlaylistIndex = 0;
     }
 
     public get currentPlaylistIndex(): number {
@@ -113,10 +113,14 @@ export class AudioManager {
     }
 
     public get seek(): number {
-        if (!this._howl) {
+        if (!this._howl || !this._currentHowlId) {
             return 0;
         }
-        return this._howl.seek(this._currentHowlId);
+        let returnValue = this._howl.seek(this._currentHowlId);
+        if (typeof returnValue !== 'number') {
+            returnValue = 0;
+        }
+        return returnValue;
     }
 
     public set seek(value: number) {
