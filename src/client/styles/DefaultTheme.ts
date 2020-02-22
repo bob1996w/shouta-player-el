@@ -14,7 +14,7 @@ export const DefaultPlayerTheme: DefaultTheme = {
         },
         background: {
             background: '#121212',
-            surface: '#1f1f1f'
+            surface: 'rgba(255, 255, 255, 0.1)'
         },
         text: {
             main: '#e0e0e0',

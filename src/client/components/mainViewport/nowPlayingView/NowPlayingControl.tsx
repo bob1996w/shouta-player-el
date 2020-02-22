@@ -7,6 +7,13 @@ import { DisplayFormat } from '../../../../shared/Utility/DisplayFormat';
 import { AppIpcIndex } from '../../../AppIpcIndex';
 import { DefaultPlayerTheme } from '../../../styles/DefaultTheme';
 
+const NowPlayingControlDiv = styled.div`
+    margin: 0.3em;
+    padding: 0.2em;
+    border-radius: 0.5em;
+    background: ${props => props.theme.colors.background.surface};
+`
+
 const ControlButtonDiv = styled.div`
     display: flex;
     align-items: center;
@@ -133,7 +140,7 @@ export function NowPlayingControl(props: any) {
 
     return (
         <ThemeProvider theme={DefaultPlayerTheme}>
-            <div id="nowPlayingControl">
+            <NowPlayingControlDiv id="nowPlayingControl">
                 <ControlButtonDiv>
                     <ControlButton onClick={buttonPreviousTrack}>前</ControlButton>
                     <ControlButton onClick={buttonSeekBackward}>退</ControlButton>
@@ -156,7 +163,7 @@ export function NowPlayingControl(props: any) {
                             onMouseDown={handleSeekMouseDown} onMouseUp={handleSeekMouseUp}/>
                     <p id="nowPlayingControl-seekView-time2">{DisplayFormat.seconds2TimeString(duration)}</p>
                 </div>
-            </div>
+            </NowPlayingControlDiv>
         </ThemeProvider>
     );
 }
