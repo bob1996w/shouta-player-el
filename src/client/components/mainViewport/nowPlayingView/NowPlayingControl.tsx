@@ -1,8 +1,40 @@
 import * as React from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
 import { EAudioPlayState } from '../../../../shared/Audio/EAudioPlayState';
 import { IpcRequest } from '../../../../shared/AppIpc/IpcRequest';
 import { DisplayFormat } from '../../../../shared/Utility/DisplayFormat';
+import { AppIpcIndex } from '../../../AppIpcIndex';
+import { DefaultPlayerTheme } from '../../../styles/DefaultTheme';
+
+const ControlButtonDiv = styled.div`
+    display: flex;
+    align-items: center;
+`
+
+const ControlButton = styled.button`
+    margin: 0.2em 0.2em;
+    height: 2em;
+    width: 2em;
+    
+    border: 0px;
+    border-radius: 1.1em;
+    background: ${props => props.theme.colors.tone.primary};
+
+    font-size: 1em;
+    color: ${props => props.theme.colors.actionText.onPrimary};
+
+    &:focus {
+        outline: 0px;
+    }
+`
+
+const PrimaryControlButton = styled(ControlButton)`
+    height: 2em;
+    width: 2em;
+    border-radius: 1.5em;
+    font-size: 1.5em;
+`
 
 export function NowPlayingControl(props: any) {
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -100,29 +132,31 @@ export function NowPlayingControl(props: any) {
     }
 
     return (
-        <div id="nowPlayingControl">
-            <div>
-                <a href="#" onClick={buttonPreviousTrack}>前</a>
-                <a href="#" onClick={buttonSeekBackward}>退</a>
-                {isPlaying?
-                    <a href="#" onClick={buttonPlayOrPause}>暫</a>
-                    :
-                    <a href="#" onClick={buttonPlayOrPause}>始</a>
-                }
-                <a href="#" onClick={buttonSeekForward}>進</a>
-                <a href="#" onClick={buttonNextTrack}>次</a>
-                <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange}/>
+        <ThemeProvider theme={DefaultPlayerTheme}>
+            <div id="nowPlayingControl">
+                <ControlButtonDiv>
+                    <ControlButton onClick={buttonPreviousTrack}>前</ControlButton>
+                    <ControlButton onClick={buttonSeekBackward}>退</ControlButton>
+                    {isPlaying?
+                        <PrimaryControlButton onClick={buttonPlayOrPause}>暫</PrimaryControlButton>
+                        :
+                        <PrimaryControlButton onClick={buttonPlayOrPause}>始</PrimaryControlButton>
+                    }
+                    <ControlButton onClick={buttonSeekForward}>進</ControlButton>
+                    <ControlButton onClick={buttonNextTrack}>次</ControlButton>
+                    <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange}/>
+                </ControlButtonDiv>
+                <div id="nowPlayingControl-seekView">
+                    <p id="nowPlayingControl-seekView-time1">
+                        {DisplayFormat.seconds2TimeString(isUserDraggingSeek? manualSeekTime : seekTime)}
+                    </p>
+                    <input type="range" name="seek" id="seek" min="0" max={duration} step="any" 
+                            value={isUserDraggingSeek? manualSeekTime : seekTime}
+                            onChange={handleSeekChange} 
+                            onMouseDown={handleSeekMouseDown} onMouseUp={handleSeekMouseUp}/>
+                    <p id="nowPlayingControl-seekView-time2">{DisplayFormat.seconds2TimeString(duration)}</p>
+                </div>
             </div>
-            <div id="nowPlayingControl-seekView">
-                <p id="nowPlayingControl-seekView-time1">
-                    {DisplayFormat.seconds2TimeString(isUserDraggingSeek? manualSeekTime : seekTime)}
-                </p>
-                <input type="range" name="seek" id="seek" min="0" max={duration} step="any" 
-                        value={isUserDraggingSeek? manualSeekTime : seekTime}
-                        onChange={handleSeekChange} 
-                        onMouseDown={handleSeekMouseDown} onMouseUp={handleSeekMouseUp}/>
-                <p id="nowPlayingControl-seekView-time2">{DisplayFormat.seconds2TimeString(duration)}</p>
-            </div>
-        </div>
+        </ThemeProvider>
     );
 }

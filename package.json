@@ -66,13 +66,15 @@
   "dependencies": {
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "@types/styled-components": "^4.1.8",
     "express": "^4.17.1",
     "howler": "^2.1.3",
     "music-metadata": "^6.3.1",
     "portfinder": "^1.0.25",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "styled-components": "^5.0.1"
   },
   "files": []
 }
