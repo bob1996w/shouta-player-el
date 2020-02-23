@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Path from 'path';
-import styled from 'styled-components';
+import styled , { keyframes } from 'styled-components';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
 
 const NowPlayingInfoDiv = styled.div`
@@ -10,13 +10,17 @@ const NowPlayingInfoDiv = styled.div`
     background: ${props => props.theme.colors.background.surface};
 `
 
-const ScrollText = styled.p`
+const AuxiliaryText = styled.p`
     font-size: 100%;
     color: ${props => props.theme.colors.text.auxiliary};
+    overflow: scroll;
+    white-space: nowrap;
 `
-const TitleScrollText = styled(ScrollText)`
+const TitleText = styled.p`
     font-size: 150%;
     color: ${props => props.theme.colors.text.main};
+    overflow: scroll;
+    white-space: nowrap;
 `
 
 export function NowPlayingInfo(props: any) {
@@ -37,9 +41,9 @@ export function NowPlayingInfo(props: any) {
 
     return (
         <NowPlayingInfoDiv id="nowPlayingInfo">
-            <TitleScrollText>{audioTitle}</TitleScrollText>
-            <ScrollText>{audioArtist}</ScrollText>
-            <ScrollText>{audioAlbum}</ScrollText>
+            <TitleText>{audioTitle}</TitleText>
+            <AuxiliaryText>{audioArtist}</AuxiliaryText>
+            <AuxiliaryText>{audioAlbum}</AuxiliaryText>
         </NowPlayingInfoDiv>
     );
 }

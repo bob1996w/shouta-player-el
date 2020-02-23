@@ -105,9 +105,10 @@ p {
 @media screen and (min-width: 0px) {
     #mainViewport-nowPlayingView {
         grid-area: nowPlaying;
+        max-width: 100%;
     
         display: grid;
-        grid-template-columns: auto;
+        grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto auto;
         grid-template-areas: "nowPlayingInfo"
                             "nowPlayingControl";
@@ -117,9 +118,10 @@ p {
 @media screen and (min-width: 500px) {
     #mainViewport-nowPlayingView {
         grid-area: nowPlaying;
+        max-width: 100%;
     
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) 1fr;
         grid-template-rows: auto;
         grid-template-areas: "nowPlayingInfo nowPlayingControl";
     }
