@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Path from 'path';
 import styled , { keyframes } from 'styled-components';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
+import { ScrollText } from '../../utilityComponents/ScrollText';
 
 const NowPlayingInfoDiv = styled.div`
     margin: 0.3em;
@@ -10,18 +11,15 @@ const NowPlayingInfoDiv = styled.div`
     background: ${props => props.theme.colors.background.surface};
 `
 
-const AuxiliaryText = styled.p`
+const AuxiliaryText = styled(ScrollText)`
     font-size: 100%;
     color: ${props => props.theme.colors.text.auxiliary};
-    overflow: scroll;
-    white-space: nowrap;
 `
-const TitleText = styled.p`
+const TitleText = styled(ScrollText)`
     font-size: 150%;
     color: ${props => props.theme.colors.text.main};
-    overflow: scroll;
-    white-space: nowrap;
 `
+
 
 export function NowPlayingInfo(props: any) {
     const [audioTitle, setAudioTitle] = React.useState('Title');
@@ -41,9 +39,9 @@ export function NowPlayingInfo(props: any) {
 
     return (
         <NowPlayingInfoDiv id="nowPlayingInfo">
-            <TitleText>{audioTitle}</TitleText>
-            <AuxiliaryText>{audioArtist}</AuxiliaryText>
-            <AuxiliaryText>{audioAlbum}</AuxiliaryText>
+            <TitleText text={audioTitle} />
+            <AuxiliaryText text={audioArtist} />
+            <AuxiliaryText text={audioAlbum} />
         </NowPlayingInfoDiv>
     );
 }
