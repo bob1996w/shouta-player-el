@@ -9,19 +9,57 @@ const ScrollDiv = styled.div`
 `
 
 const MarqueeKeyframes = keyframes`
-    0% {
+    15% {
+        transform: translate(0%, 0);
+    }
+    49% {
+        transform: translate(-100%, 0);
+        animation-timing-function: steps(1, end);
+    }
+    50% {
+        transform: translate(100%, 0);
+    }
+    65% {
+        transform: translate(100%, 0);
+    }
+    99% {
         transform: translate(0%, 0);
     }
     100% {
+        transform: translate(0%, 0);
+    }
+`
+
+const Marquee2Keyframes = keyframes`
+    15% {
+        transform: translate(0%, 0);
+    }
+    49% {
         transform: translate(-100%, 0);
+    }
+    50% {
+        transform: translate(-100%, 0);
+    }
+    65% {
+        transform: translate(-100%, 0);
+    }
+    99% {
+        transform: translate(-200%, 0);
+        animation-timing-function: steps(1, end);
+    }
+    100% {
+        transform: translate(0%, 0);
     }
 `
 
 const ScrollSpan = styled.span`
-    margin: 0;
+    padding-right: 100px;
     display: inline-block;
-    padding-left: 100%;
     animation: ${MarqueeKeyframes} 20s linear infinite;
+`
+
+const ScrollSpan2 = styled(ScrollSpan)`
+    animation: ${Marquee2Keyframes} 20s linear infinite;
 `
 
 const TestScrollP = styled.p`
@@ -42,22 +80,25 @@ export function ScrollText(props: ScrollTextProps) {
     let outerBox = React.createRef<HTMLDivElement>();
 
     function checkOverflow(el){
+        /*
         var curOverflow = el.style.overflow;
-    
+        
         if ( !curOverflow || curOverflow === "visible" ) {
             el.style.overflow = "hidden";
         }
-
+        */
         var isOverflowing = el.clientWidth < el.scrollWidth 
             || el.clientHeight < el.scrollHeight;
-        el.style.overflow = curOverflow;
+        //el.style.overflow = curOverflow;
         return isOverflowing;
     }
 
     function updateShouldScroll() {
         originalTextElement.current.style.display = "block";
         setShouldScroll(checkOverflow(originalTextElement.current));
-        originalTextElement.current.style.display = "none";
+        if (originalTextElement.current) {
+            originalTextElement.current.style.display = "none";
+        }
     }
 
     React.useEffect(() => {
@@ -80,6 +121,9 @@ export function ScrollText(props: ScrollTextProps) {
                     <ScrollSpan>
                         <p className={props.className}>{props.text}</p>
                     </ScrollSpan>
+                    <ScrollSpan2>
+                        <p className={props.className}>{props.text}</p>
+                    </ScrollSpan2>
                 </ScrollDiv>
                 :
                 <div>
