@@ -1,5 +1,6 @@
 import * as React from 'react';
-import styled , { keyframes } from 'styled-components';
+import styled , { keyframes, css } from 'styled-components';
+import { getPortPromise } from 'portfinder';
 
 const ScrollDiv = styled.div`
     width: 100%;
@@ -52,14 +53,23 @@ const Marquee2Keyframes = keyframes`
     }
 `
 
-const ScrollSpan = styled.span`
-    padding-right: 100px;
+interface ScrollSpanProps {
+    readonly animated: boolean;
+    readonly animationDuration: number;
+}
+
+const AnimationMixin1 = css<ScrollSpanProps>`
+    ${MarqueeKeyframes} ${props => props.animationDuration}s linear infinite
+`
+
+const ScrollSpan = styled.span<ScrollSpanProps>`
+    padding-right: ${props => props.animated? '100px' : ''};
     display: inline-block;
-    animation: ${MarqueeKeyframes} 20s linear infinite;
+    animation: ${props => props.animated? AnimationMixin1: 'none'};
 `
 
 const ScrollSpan2 = styled(ScrollSpan)`
-    animation: ${Marquee2Keyframes} 20s linear infinite;
+    animation: ${Marquee2Keyframes} ${props => props.animationDuration}s linear infinite;
 `
 
 const TestScrollP = styled.p`
@@ -72,38 +82,23 @@ const TestScrollP = styled.p`
 type ScrollTextProps = {
     className?: string,
     text: string
+    scrollSpeed: number;
 }
 
 export function ScrollText(props: ScrollTextProps) {
     const [shouldScroll, setShouldScroll] = React.useState(false);
-    let originalTextElement = React.createRef<HTMLParagraphElement>();
-    let outerBox = React.createRef<HTMLDivElement>();
-
-    function checkOverflow(el){
-        /*
-        var curOverflow = el.style.overflow;
-        
-        if ( !curOverflow || curOverflow === "visible" ) {
-            el.style.overflow = "hidden";
-        }
-        */
-        var isOverflowing = el.clientWidth < el.scrollWidth 
-            || el.clientHeight < el.scrollHeight;
-        //el.style.overflow = curOverflow;
-        return isOverflowing;
-    }
+    const textElementRef = React.useRef(null as HTMLParagraphElement);
+    const outerBoxRef = React.useRef(null as HTMLDivElement);
+    const animationDuration = React.useRef(0);
 
     function updateShouldScroll() {
-        originalTextElement.current.style.display = "block";
-        setShouldScroll(checkOverflow(originalTextElement.current));
-        if (originalTextElement.current) {
-            originalTextElement.current.style.display = "none";
-        }
+        animationDuration.current = textElementRef.current.clientWidth / props.scrollSpeed;
+        setShouldScroll(outerBoxRef.current.clientWidth - textElementRef.current.clientWidth < 0);
     }
 
     React.useEffect(() => {
         updateShouldScroll();
-    }, [props.text]);
+    });
 
     React.useEffect(() => {
         window.addEventListener("resize", updateShouldScroll);
@@ -112,25 +107,18 @@ export function ScrollText(props: ScrollTextProps) {
         };
     });
 
-
     return (
-        <div ref={outerBox}>
-            <TestScrollP className={props.className} ref={originalTextElement}>{props.text}</TestScrollP>
-            {shouldScroll?
-                <ScrollDiv>
-                    <ScrollSpan>
-                        <p className={props.className}>{props.text}</p>
-                    </ScrollSpan>
-                    <ScrollSpan2>
+        <div>
+            <ScrollDiv ref={outerBoxRef}>
+                <ScrollSpan animated={shouldScroll} animationDuration={animationDuration.current}>
+                    <p ref={textElementRef} className={props.className}>{props.text}</p>
+                </ScrollSpan>
+                {shouldScroll &&
+                    <ScrollSpan2 animated={shouldScroll} animationDuration={animationDuration.current}>
                         <p className={props.className}>{props.text}</p>
                     </ScrollSpan2>
-                </ScrollDiv>
-                :
-                <div>
-                    <p className={props.className}>{props.text}</p>
-                </div>
-            }
+                }
+            </ScrollDiv>
         </div>
     )
-
 }

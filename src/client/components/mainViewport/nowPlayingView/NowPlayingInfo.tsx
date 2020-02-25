@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as Path from 'path';
-import styled , { keyframes } from 'styled-components';
+import styled , { ThemeProvider } from 'styled-components';
 import { EAppIpcAction } from '../../../../shared/AppIpc/EAppIpcAction';
 import { ScrollText } from '../../utilityComponents/ScrollText';
+import { DefaultPlayerTheme } from '../../../styles/DefaultTheme';
 
 const NowPlayingInfoDiv = styled.div`
     margin: 0.3em;
@@ -38,10 +39,12 @@ export function NowPlayingInfo(props: any) {
     }, [])
 
     return (
-        <NowPlayingInfoDiv id="nowPlayingInfo">
-            <TitleText text={audioTitle} />
-            <AuxiliaryText text={audioArtist} />
-            <AuxiliaryText text={audioAlbum} />
-        </NowPlayingInfoDiv>
+        <ThemeProvider theme={DefaultPlayerTheme}>
+            <NowPlayingInfoDiv id="nowPlayingInfo">
+                <TitleText text={audioTitle} scrollSpeed={20}/>
+                <AuxiliaryText text={audioArtist} scrollSpeed={20}/>
+                <AuxiliaryText text={audioAlbum} scrollSpeed={20}/>
+            </NowPlayingInfoDiv>
+        </ThemeProvider>
     );
 }
