@@ -6,6 +6,7 @@ import { IpcRequest } from '../../../../shared/AppIpc/IpcRequest';
 import { DisplayFormat } from '../../../../shared/Utility/DisplayFormat';
 import { AppIpcIndex } from '../../../AppIpcIndex';
 import { DefaultPlayerTheme } from '../../../styles/DefaultTheme';
+import { useInterval } from '../../../../shared/Utility/UseInterval';
 
 const NowPlayingControlDiv = styled.div`
     margin: 0.3em;
@@ -53,6 +54,10 @@ export function NowPlayingControl(props: any) {
     const [isUserDraggingSeek, setIsUserDraggingSeek] = React.useState(false);
     const [manualSeekTime, setManualSeekTime] = React.useState(0.0);
 
+    function onGetCurrentPlaying(callback: (playing: boolean) => void) {
+        callback(isPlaying);
+    }
+
     React.useEffect(() => {
         // run once on first render
         props.ipc.on('Audio', EAppIpcAction.Response, (request:string, data: any) => {
@@ -75,14 +80,14 @@ export function NowPlayingControl(props: any) {
             new IpcRequest('volume', null)
         ]);
 
-        // poll seek time every 500ms
-        setInterval(() => {
-            props.ipc.send2Audio(EAppIpcAction.Query, [
-                new IpcRequest('seek', null)
-            ]);
-        }, 500);
-
     }, [])
+
+    // poll seek time every 500 ms.
+    useInterval(() => {
+        props.ipc.send2Audio(EAppIpcAction.Query, [
+            new IpcRequest('seek', null)
+        ]);
+    }, isPlaying? 100 : null);
 
     function buttonPlayOrPause() {
         props.ipc.send2Audio(EAppIpcAction.Update, [
