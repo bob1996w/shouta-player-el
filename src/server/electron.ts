@@ -21,6 +21,8 @@ let g = <Global>global;
 let port: number;
 let viewServerAppInstance = viewServerApp.getViewServerApp(app.getAppPath());
 
+const gotTheLock = app.requestSingleInstanceLock();
+
 let args = process.argv.slice(2);
 console.log(args);
 
@@ -71,38 +73,48 @@ function createWindow (port: number) {
     Menu.setApplicationMenu(g.appIpcMenuBar.menus.Main);
 
     // when closing the rendererClientWindow
-    g.rendererClientWindow.on('closed', () => {
-        g.audioClientWindow = null;
-        g.rendererClientWindow = null;
-        g.appIpcCommands = null;
-        g.appIpcMain = null;
-        g.appIpcMenuBar = null;
+    g.rendererClientWindow.on('close', (event) => {
+        if (process.platform === 'darwin') {
+            event.preventDefault();
+            g.rendererClientWindow.hide();
+        }
+        // TODO: when windows && minimize to tray
     })
 }
 
-app.on('ready', () => {
-    portfinder.getPortPromise()
-    .then((port) => {
-        createWindow(port);
-    }).catch((error) => {
-        console.error(error);
+if (!gotTheLock) {
+    app.quit();
+}
+else {
+    app.on('second-instance', (event, argv, workingDir) => {
+        if (g.rendererClientWindow) {
+            if (g.rendererClientWindow.isMinimized()) {
+                g.rendererClientWindow.restore()
+            }
+            g.rendererClientWindow.focus();
+        }
+        // do something with argv...
     });
-});
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('activate', () => {
-    // when dock icon clicked on macOS
-    if (g.rendererClientWindow === null) {
+    app.on('ready', () => {
         portfinder.getPortPromise()
         .then((port) => {
-            createWindow(port)
-        }).catch((err) => {
-            console.error(err)
-        })
-    }
-})
+            createWindow(port);
+        }).catch((error) => {
+            console.error(error);
+        });
+    });
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
+
+    app.on('activate', () => {
+        // when dock icon clicked on macOS
+        if (g.rendererClientWindow) {
+            g.rendererClientWindow.show();
+        }
+    })
+}
