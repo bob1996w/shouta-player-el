@@ -73,13 +73,28 @@ function createWindow (port: number) {
     Menu.setApplicationMenu(g.appIpcMenuBar.menus.Main);
 
     // when closing the rendererClientWindow
-    g.rendererClientWindow.on('close', (event) => {
-        if (process.platform === 'darwin') {
-            event.preventDefault();
-            g.rendererClientWindow.hide();
-        }
-        // TODO: when windows && minimize to tray
-    })
+    if (process.platform === 'darwin') {
+        let forceQuit = false;
+        app.on('before-quit', () => {
+            forceQuit = true;
+        })
+        g.rendererClientWindow.on('close', (event) => {
+            if (!forceQuit) {
+                // user press X on browser window
+                event.preventDefault();
+                g.rendererClientWindow.hide();
+            }
+            else {
+                // cmd-Q
+            }
+        });
+    }
+    else {
+        g.rendererClientWindow.on('close', (event) => {
+            // TODO: windows minimize to tray?
+        });
+    }
+    
 }
 
 if (!gotTheLock) {
@@ -116,5 +131,13 @@ else {
         if (g.rendererClientWindow) {
             g.rendererClientWindow.show();
         }
+    })
+
+    app.on('before-quit', () => {
+        console.log('before-quit');
+    })
+
+    app.on('will-quit', () => {
+        console.log('will-quit');
     })
 }
